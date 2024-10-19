@@ -794,6 +794,10 @@
     </style>
 </head>
 <body>
+    <audio autoplay loop>
+        <source src="tests.mp3" type="audio/mp3">
+        Your browser does not support the audio tag.
+      </audio>
     <nav>
         <div class="nav-content">
             <a href="#" class="logo">
@@ -888,10 +892,119 @@
     </style>
 
     <div class="content section" id="home">
-        <h1 class="glitch" data-text="CyberSecurity Club">CyberSecurity Club</h1>
-        <p>Join the elite force of digital defenders. Learn, hack, and protect in our cutting-edge cybersecurity community.</p>
-        <button class="cta-button">JOIN THE NETWORK</button>
+        <div class="content-wrapper">
+            <h1 class="glitch" data-text="CyberSecurity Club">CyberSecurity Club</h1>
+            <p class="tagline">Join the elite force of digital defenders.</p>
+            <p class="description">Learn, hack, and protect in our cutting-edge cybersecurity community.</p>
+            <div class="cta-container">
+                <button class="cta-button">
+                    <span class="cta-text">JOIN THE NETWORK</span>
+                    <span class="cta-icon"><i class="fas fa-shield-alt"></i></span>
+                </button>
+            </div>
+        </div>
+        <div class="background-animation">
+            <div class="matrix-rain"></div>
+        </div>
     </div>
+    <style>
+        .content.section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .content-wrapper {
+            text-align: center;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        .glitch {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .cta-container {
+            display: flex;
+            justify-content: center;
+        }
+        .cta-button {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.2rem;
+            background: #0f0;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            background: #00ff00;
+            transform: scale(1.05);
+        }
+        .cta-text {
+            margin-right: 0.5rem;
+        }
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,255,0,0.2) 100%);
+            animation: matrix-rain 20s linear infinite;
+        }
+        @keyframes matrix-rain {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        @media screen and (max-width: 768px) {
+            .glitch {
+                font-size: 2.5rem;
+            }
+            .tagline {
+                font-size: 1.2rem;
+            }
+            .description {
+                font-size: 1rem;
+            }
+            .cta-button {
+                font-size: 1rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .glitch {
+                font-size: 2rem;
+            }
+            .tagline {
+                font-size: 1rem;
+            }
+            .description {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
     <div class="about-us section" id="about">
         <div class="about-us-content">
             <h2 class="glitch" data-text="About Us">About Us</h2>
@@ -919,31 +1032,144 @@
         
 
     <div class="latest-events section" id="events">
-        <h2 class="glitch" data-text="Latest Events">Latest Events</h2>
+        <h2 class="glitch" data-text="Upcoming Missions">Upcoming Missions</h2>
         <div class="events-container">
             <div class="event-card">
-                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cyber Defense Workshop">
-                <h3>Cyber Defense Workshop</h3>
-                <p>Learn the latest techniques in cyber defense from industry experts. Hands-on training included.</p>
-                <button class="participate-button">Participate Now</button>
+                <div class="event-image">
+                    <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cyber Defense Workshop">
+                    <div class="event-overlay">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <h3>Operation Firewall</h3>
+                    <p>Infiltrate our simulated network and learn cutting-edge defense techniques from seasoned cyber operatives.</p>
+                    <button class="participate-button">Accept Mission</button>
+                </div>
             </div>
             <div class="event-card">
-                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Ethical Hacking Competition">
-                <h3>Ethical Hacking Competition</h3>
-                <p>Test your skills against other hackers in our annual ethical hacking competition. Great prizes to be won!</p>
-                <button class="participate-button">Participate Now</button>
+                <div class="event-image">
+                    <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Ethical Hacking Competition">
+                    <div class="event-overlay">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <h3>Hack The Planet</h3>
+                    <p>Join our annual ethical hacking tournament. Outsmart other hackers and claim your place among the elite.</p>
+                    <button class="participate-button">Enter Arena</button>
+                </div>
             </div>
             <div class="event-card">
-                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cybersecurity Career Fair">
-                <h3>Cybersecurity Career Fair</h3>
-                <p>Connect with top companies in the cybersecurity industry. Bring your resume and be ready to impress!</p>
-                <button class="participate-button">Participate Now</button>
+                <div class="event-image">
+                    <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cybersecurity Career Fair">
+                    <div class="event-overlay">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <h3>Cyber Recruitment</h3>
+                    <p>Infiltrate top-secret job opportunities. Bring your skills and be prepared for intense scrutiny.</p>
+                    <button class="participate-button">Initiate Contact</button>
+                </div>
             </div>
         </div>
     </div>
+    <style>
+        .latest-events {
+            padding: 2rem;
+            background: linear-gradient(to right, #000, #001a00);
+        }
+        .events-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 2rem;
+        }
+        .event-card {
+            flex-basis: calc(33.333% - 2rem);
+            max-width: 350px;
+            background: rgba(0, 51, 0, 0.7);
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
+        }
+        .event-image {
+            position: relative;
+            overflow: hidden;
+        }
+        .event-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .event-card:hover .event-image img {
+            transform: scale(1.1);
+        }
+        .event-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .event-card:hover .event-overlay {
+            opacity: 1;
+        }
+        .event-overlay i {
+            font-size: 3rem;
+            color: #0f0;
+        }
+        .event-content {
+            padding: 1.5rem;
+        }
+        .event-content h3 {
+            color: #0f0;
+            margin-bottom: 1rem;
+        }
+        .event-content p {
+            color: #0f0;
+            margin-bottom: 1rem;
+        }
+        .participate-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f0;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .participate-button:hover {
+            background: #00ff00;
+        }
+        @media screen and (max-width: 1024px) {
+            .event-card {
+                flex-basis: calc(50% - 2rem);
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .event-card {
+                flex-basis: 100%;
+            }
+        }
+    </style>
 
 <div class="management-section section" id="management">
-    <h2 class="glitch" data-text="Management Heads" align="center">Management Heads</h2>
+    <h2 class="glitch" data-text="Neural Network Nodes" align="center">Neural Network Nodes</h2>
     <div class="management-grid">
         <!-- President -->
         <div class="management-card">
