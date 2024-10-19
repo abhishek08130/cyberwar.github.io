@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSecurity Club</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            background: #000;
+            color: #0f0;
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 1024px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                display: none;
+                margin-top: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a, .nav-links .dropdown {
+                padding: 0.5rem 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                color: #0f0;
+                background: none;
+                border: none;
+                cursor: pointer;
+                position: absolute;
+                top: 1rem;
+                right: 2rem;
+            }
+
+            .about-us {
+                flex-direction: column;
+            }
+
+            .about-us-content, .about-us-image {
+                width: 100%;
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+
+            .events-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .event-card {
+                width: 100%;
+                max-width: 300px;
+                margin-bottom: 2rem;
+            }
+
+            .management-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-links, .social-icons {
+                margin-top: 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo-tagline {
+                font-size: 0.7rem;
+            }
+
+            .nav-links a, .nav-links .dropdown {
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .cta-button {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
+
+            .about-us h2, .latest-events h2, .management-section h2 {
+                font-size: 2rem;
+            }
+
+            .management-card {
+                padding: 1.5rem;
+            }
+
+            .management-image {
+                width: 100px;
+                height: 100px;
+            }
+
+            .management-name {
+                font-size: 1.2rem;
+            }
+
+            .management-designation {
+                font-size: 0.9rem;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+
+        @media screen and (min-width: 1025px) {
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a, .nav-links .dropdown {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Rest of the styles remain unchanged */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 100;
+            border-bottom: 2px solid #0f0;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0f0;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .logo-tagline {
+            font-size: 0.8rem;
+            font-weight: normal;
+            color: #0f0;
+            opacity: 0.8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a, .nav-links .dropdown {
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover, .nav-links .dropdown:hover {
+            border-color: #0f0;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 20px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.9);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,255,0,0.2);
+            z-index: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #0f0;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .login-button {
+            position: relative;
+            width: 100px;
+            height: 40px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .login-button-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .login-button:hover .login-button-inner {
+            transform: rotateX(180deg);
+        }
+
+        .login-button-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            text-transform: uppercase;
+            border: 2px solid #0f0;
+            background: rgba(0, 255, 0, 0.1);
+            color: #0f0;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-button:hover .login-button-face {
+            background-color: #0f0;
+            color: #000;
+        }
+
+        .login-button-face.front {
+            z-index: 2;
+        }
+
+        .login-button-face.back {
+            transform: rotateX(180deg);
+        }
+
+        .content {
+            position: relative;
+            padding: 8rem 2rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out forwards;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: transparent;
+            color: #0f0;
+            border: 2px solid #0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out 1s forwards;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 30px;
+        }
+
+        .cta-button:hover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00ff;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: 2px 0 #00ffff;
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 30% 0); }
+            100% { clip-path: inset(10% 0 60% 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(30% 0 20% 0); }
+            100% { clip-path: inset(50% 0 20% 0); }
+        }
+
+        .about-us {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .about-us-content {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .about-us h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            color: #0f0;
+        }
+
+        .about-us p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            text-align: justify;
+        }
+
+        .about-us-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .about-us-image svg {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+        }
+
+        @keyframes errorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .computer {
+            animation: errorShake 0.5s ease-in-out infinite;
+        }
+
+        .error-message {
+            animation: errorBlink 1s infinite;
+        }
+
+        .warning-sign {
+            animation: errorBlink 1s infinite;
+        }
+
+        /* Improved transition for sections */
+        .section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Latest Events Section */
+        .latest-events {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+        }
+
+        .latest-events h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #0f0;
+        }
+
+        .events-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 2rem;
+        }
+
+        .event-card {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .event-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #0f0;
+        }
+
+        .event-card p {
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .event-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .participate-button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background: transparent;
+            color: #0f0;
+            border: 2px solid #0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 20px;
+        }
+
+        .participate-button:hover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Footer Styles */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            color: #0f0;
+            text-decoration: none;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: #0f0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            color: #0f0;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #0f0;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .designer-watermark {
+            margin-top: 0.5rem;
+            font-size: 0.6rem;
+            color: #0f0;
+            opacity: 0.6;
+            text-align: center;
+        }
+
+        .management-section {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+        }
+
+        .management-section h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #0f0;
+        }
+
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .management-card {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #0f0;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .management-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+        }
+
+        .management-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .management-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .management-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #0f0;
+            padding: 5px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .management-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .management-name {
+            font-size: 1.5rem;
+            color: #0f0;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .management-designation {
+            font-size: 1rem;
+            color: #0f0;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: #0f0;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .binary-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(0, 255, 0, 0.1) 25%, 
+                transparent 25%, 
+                transparent 75%, 
+                rgba(0, 255, 0, 0.1) 75%);
+            pointer-events: none;
+            opacity: 0.1;
+        }
+        .about-us {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+        }
+        .about-us-content {
+            flex: 1 1 60%;
+            padding-right: 2rem;
+        }
+        .about-us-image {
+            flex: 1 1 40%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        @media screen and (max-width: 768px) {
+            .about-us {
+                flex-direction: column;
+            }
+            .about-us-content {
+                flex: 1 1 100%;
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+            .about-us-image {
+                flex: 1 1 100%;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .content.section#home {
+                padding: 2rem 1rem;
+            }
+            .content.section#home h1 {
+                font-size: 2rem;
+            }
+            .content.section#home p {
+                font-size: 1rem;
+            }
+            .content.section#home .cta-button {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .content.section#home h1 {
+                font-size: 1.5rem;
+            }
+            .content.section#home p {
+                font-size: 0.9rem;
+            }
+            .content.section#home .cta-button {
+                font-size: 0.8rem;
+                padding: 0.7rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="glitch" data-text="[CYBER WARRIERS]">[CYBER WARRIERS]</span>
+                <span class="logo-tagline">Defending the Digital Frontier</span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">&#9776;</button>
+            <div class="nav-links" id="mobileNav">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#events">Events</a>
+                <a href="#contact">Contact</a>
+                <div class="login-button">
+                    <div class="login-button-inner">
+                        <div class="login-button-face front">Login</div>
+                        <div class="login-button-face back">Enter</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+
+            // Ensure menu toggle is visible
+            menuToggle.style.display = 'block';
+
+            menuToggle.addEventListener('click', function() {
+                if (mobileNav.style.display === 'flex') {
+                    mobileNav.style.display = 'none';
+                    this.setAttribute('aria-expanded', 'false');
+                } else {
+                    mobileNav.style.display = 'flex';
+                    this.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            // Handle resize and initial state
+            function handleResize() {
+                if (window.innerWidth > 768) {
+                    menuToggle.style.display = 'none';
+                    mobileNav.style.display = 'flex';
+                } else {
+                    menuToggle.style.display = 'block';
+                    mobileNav.style.display = 'none';
+                }
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Call once to set initial state
+
+            // Close mobile nav when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!mobileNav.contains(event.target) && !menuToggle.contains(event.target) && window.innerWidth <= 768) {
+                    mobileNav.style.display = 'none';
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    </script>
+    <style>
+        @media screen and (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                display: none;
+            }
+            .nav-links a, .nav-links .login-button {
+                width: 100%;
+                text-align: left;
+                padding: 10px 0;
+            }
+            .menu-toggle {
+                display: block;
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: #0f0;
+                cursor: pointer;
+            }
+        }
+    </style>
+
+    <div class="content section" id="home">
+        <h1 class="glitch" data-text="CyberSecurity Club">CyberSecurity Club</h1>
+        <p>Join the elite force of digital defenders. Learn, hack, and protect in our cutting-edge cybersecurity community.</p>
+        <button class="cta-button">JOIN THE NETWORK</button>
+    </div>
+    <div class="about-us section" id="about">
+        <div class="about-us-content">
+            <h2 class="glitch" data-text="About Us">About Us</h2>
+            <p>We are the vigilant guardians of the digital realm, tirelessly working to protect the cyber landscape from threats both known and unknown. Our members are trained in the art of ethical hacking, using their skills to identify vulnerabilities and strengthen defenses against cyber attacks. We push the boundaries of cybersecurity, developing cutting-edge solutions to stay ahead of evolving threats in the digital world.</p>
+        </div>
+        <div class="about-us-image">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="auto" max-width="300">
+                <g class="computer">
+                    <rect x="96" y="96" width="320" height="240" rx="16" ry="16" fill="none" stroke="#0f0" stroke-width="8"/>
+                    <rect x="64" y="336" width="384" height="32" rx="8" ry="8" fill="none" stroke="#0f0" stroke-width="8"/>
+                    <rect x="224" y="368" width="64" height="48" fill="none" stroke="#0f0" stroke-width="8"/>
+                    <line x1="160" y1="416" x2="352" y2="416" stroke="#0f0" stroke-width="8"/>
+                </g>
+                <g class="warning-sign">
+                    <path d="M256 140 L306 210 H206 Z" fill="none" stroke="#ff0" stroke-width="8"/>
+                    <text x="256" y="195" fill="#ff0" font-size="48" text-anchor="middle">!</text>
+                </g>
+                <g class="error-message">
+                    <text x="256" y="250" fill="#0f0" font-size="24" text-anchor="middle">ERROR</text>
+                    <text x="256" y="280" fill="#0f0" font-size="20" text-anchor="middle">404 NOT FOUND</text>
+                </g>
+            </svg>
+        </div>
+    </div>
+        
+
+    <div class="latest-events section" id="events">
+        <h2 class="glitch" data-text="Latest Events">Latest Events</h2>
+        <div class="events-container">
+            <div class="event-card">
+                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cyber Defense Workshop">
+                <h3>Cyber Defense Workshop</h3>
+                <p>Learn the latest techniques in cyber defense from industry experts. Hands-on training included.</p>
+                <button class="participate-button">Participate Now</button>
+            </div>
+            <div class="event-card">
+                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Ethical Hacking Competition">
+                <h3>Ethical Hacking Competition</h3>
+                <p>Test your skills against other hackers in our annual ethical hacking competition. Great prizes to be won!</p>
+                <button class="participate-button">Participate Now</button>
+            </div>
+            <div class="event-card">
+                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cybersecurity Career Fair">
+                <h3>Cybersecurity Career Fair</h3>
+                <p>Connect with top companies in the cybersecurity industry. Bring your resume and be ready to impress!</p>
+                <button class="participate-button">Participate Now</button>
+            </div>
+        </div>
+    </div>
+
+<div class="management-section section" id="management">
+    <h2 class="glitch" data-text="Management Heads" align="center">Management Heads</h2>
+    <div class="management-grid">
+        <!-- President -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="John Doe">
+            </div>
+            <h3 class="management-name">User 1</h3>
+            <p class="management-designation">President</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+
+        <!-- Vice President -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="Jane Smith">
+            </div>
+            <h3 class="management-name">User 2</h3>
+            <p class="management-designation">Vice President</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+
+        <!-- Technical Head -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="Mike Johnson">
+            </div>
+            <h3 class="management-name">user 3</h3>
+            <p class="management-designation">Technical Head</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+
+        <!-- Event Coordinator -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="Sarah Wilson">
+            </div>
+            <h3 class="management-name">User 4</h3>
+            <p class="management-designation">Event Coordinator</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+    </div>
+</div>
+</div>
+
+    <div class="contact-section" id="contact">
+        <h2 class="glitch" data-text="Initiate Connection">Initiate Connection</h2>
+        <div class="contact-container">
+            <div class="contact-form animated fadeInLeft">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-button"></div>
+                        <div class="terminal-button"></div>
+                        <div class="terminal-button"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="line">$ initiating_secure_connection...</div>
+                        <div class="line">$ connection_established</div>
+                        <div class="line">$ enter_credentials:</div>
+                        <form id="contact-form">
+                            <div class="form-group">
+                                <label for="name">$ name:</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">$ email:</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">$ message:</label>
+                                <textarea id="message" name="message" required></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn">Transmit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-info animated fadeInRight">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>Coordinates: USCS Department, Uttaranchal University</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <p>Secure Line: Student helpline number</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>Encrypted Channel: cyberwarriers@uudoon.in</p>
+                </div>
+                <div class="matrix-rain" id="matrix-rain"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .contact-section {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-section h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #0f0;
+        }
+
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-form, .contact-info {
+            flex: 1 1 300px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .terminal {
+            background: #000;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #333;
+            padding: 10px;
+            display: flex;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+            background: #ff5f56;
+        }
+
+        .terminal-button:nth-child(2) {
+            background: #ffbd2e;
+        }
+
+        .terminal-button:nth-child(3) {
+            background: #27c93f;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .line {
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: rgba(0, 255, 0, 0.1);
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .submit-btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Courier New', monospace;
+            border-radius: 5%;
+        }
+
+        .submit-btn:hover {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            border-radius: 10%;
+        }
+
+        .contact-info {
+            position: relative;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .info-item i {
+            font-size: 1.5rem;
+            color: #0f0;
+            margin-right: 1rem;
+        }
+
+        .info-item p {
+            color: #0f0;
+            font-size: 1rem;
+        }
+
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .animated {
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translate3d(-100%, 0, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .fadeInLeft {
+            animation-name: fadeInLeft;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translate3d(100%, 0, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .fadeInRight {
+            animation-name: fadeInRight;
+        }
+
+        @media screen and (max-width: 1200px) {
+            .contact-container {
+                flex-direction: column;
+            }
+
+            .contact-form, .contact-info {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .contact-section h2 {
+                font-size: 2.5rem;
+            }
+
+            .contact-form, .contact-info {
+                padding: 1rem;
+            }
+
+            .info-item p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .contact-section h2 {
+                font-size: 2rem;
+            }
+
+            .contact-section {
+                padding: 2rem 1rem;
+            }
+
+            .form-group input, .form-group textarea {
+                font-size: 0.9rem;
+            }
+
+            .submit-btn {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+
+            .info-item i {
+                font-size: 1.2rem;
+            }
+
+            .info-item p {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+
+    <script>
+        // Matrix rain effect
+        function createMatrixRain() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const matrixRain = document.getElementById('matrix-rain');
+
+            canvas.width = matrixRain.offsetWidth;
+            canvas.height = matrixRain.offsetHeight;
+            matrixRain.appendChild(canvas);
+
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+{}[]|;:,.<>?';
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+
+            for (let i = 0; i < columns; i++) {
+                drops[i] = 1;
+            }
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#0f0';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+
+                    drops[i]++;
+                }
+            }
+
+            setInterval(draw, 33);
+        }
+
+        // Initialize matrix rain effect
+        window.addEventListener('load', createMatrixRain);
+
+        // Form submission animation
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = form.querySelector('.submit-btn');
+            submitBtn.textContent = 'Transmitting...';
+            submitBtn.disabled = true;
+
+            setTimeout(function() {
+                submitBtn.textContent = 'Transmitted!';
+                form.reset();
+                setTimeout(function() {
+                    submitBtn.textContent = 'Transmit';
+                    submitBtn.disabled = false;
+                }, 2000);
+            }, 2000);
+        });
+
+        // Resize event for matrix rain
+        window.addEventListener('resize', function() {
+            const matrixRain = document.getElementById('matrix-rain');
+            const canvas = matrixRain.querySelector('canvas');
+            if (canvas) {
+                matrixRain.removeChild(canvas);
+                createMatrixRain();
+            }
+        });
+    </script>
+
+
+
+    <footer>
+        <div class="footer-content">
+            <a href="#" class="footer-logo">[CYBER WARRIERS]</a>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#events">Events</a>
+                <a href="#resources">Our Heads</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="social-icons">
+                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+        <div class="copyright">
+            Copyright &copy; 2023 CyberSecurity Club. All rights reserved.
+        </div>
+        <div class="designer-watermark">
+            Designed by ADJS Developers
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create Matrix-like rain effect
+        const particlesCount = 5000;
+        const positions = new Float32Array(particlesCount * 3);
+        const speeds = new Float32Array(particlesCount);
+
+        for(let i = 0; i < particlesCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 10;
+            positions[i * 3 + 1] = Math.random() * 10;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+            speeds[i] = 0.01 + Math.random() * 0.02;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x00ff00,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        camera.position.z = 5;
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const positions = points.geometry.attributes.position.array;
+
+            for(let i = 0; i < particlesCount; i++) {
+                positions[i * 3 + 1] -= speeds[i];
+
+                if(positions[i * 3 + 1] < -5) {
+                    positions[i * 3 + 1] = 5;
+                }
+            }
+
+            points.geometry.attributes.position.needsUpdate = true;
+            points.rotation.y += 0.001;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Mouse interaction
+        document.addEventListener('mousemove', (event) => {
+            const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            points.rotation.x += mouseY * 0.001;
+            points.rotation.y += mouseX * 0.001;
+        });
+
+        // Improved section transition
+        const sections = document.querySelectorAll('.section');
+        const options = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: "-100px"
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, options);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

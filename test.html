@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSecurity Club</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            background: #000;
+            color: #0f0;
+        }
+        @media screen and (max-width: 1024px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                display: none;
+                margin-top: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 0.5rem 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                color: #0f0;
+                background: none;
+                border: none;
+                cursor: pointer;
+                position: absolute;
+                top: 1rem;
+                right: 2rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo-tagline {
+                font-size: 0.7rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+
+        @media screen and (min-width: 1025px) {
+            .nav-content {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 100;
+            border-bottom: 2px solid #0f0;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0f0;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .logo-tagline {
+            font-size: 0.8rem;
+            font-weight: normal;
+            color: #0f0;
+            opacity: 0.8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a, .nav-links .dropdown {
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover, .nav-links .dropdown:hover {
+            border-color: #0f0;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 20px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.9);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,255,0,0.2);
+            z-index: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #0f0;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .login-button {
+            position: relative;
+            width: 100px;
+            height: 40px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .login-button-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .login-button:hover .login-button-inner {
+            transform: rotateX(180deg);
+        }
+
+        .login-button-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            text-transform: uppercase;
+            border: 2px solid #0f0;
+            background: rgba(0, 255, 0, 0.1);
+            color: #0f0;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-button:hover .login-button-face {
+            background-color: #0f0;
+            color: #000;
+        }
+
+        .login-button-face.front {
+            z-index: 2;
+        }
+
+        .login-button-face.back {
+            transform: rotateX(180deg);
+        }
+
+        .content {
+            position: relative;
+            padding: 8rem 2rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out forwards;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: transparent;
+            color: #0f0;
+            border: 2px solid #0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out 1s forwards;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 30px;
+        }
+
+        .cta-button:hover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00ff;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: 2px 0 #00ffff;
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 30% 0); }
+            100% { clip-path: inset(10% 0 60% 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(30% 0 20% 0); }
+            100% { clip-path: inset(50% 0 20% 0); }
+        }
+
+        .about-us {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .about-us-content {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .about-us h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            color: #0f0;
+        }
+
+        .about-us p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            text-align: justify;
+        }
+
+        .about-us-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .about-us-image svg {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+        }
+
+        @keyframes errorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .computer {
+            animation: errorShake 0.5s ease-in-out infinite;
+        }
+
+        .error-message {
+            animation: errorBlink 1s infinite;
+        }
+
+        .warning-sign {
+            animation: errorBlink 1s infinite;
+        }
+
+        /* Improved transition for sections */
+        .section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Latest Events Section */
+        .latest-events {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+        }
+
+        .latest-events h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #0f0;
+        }
+
+        .events-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 2rem;
+        }
+
+        .event-card {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .event-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #0f0;
+        }
+
+        .event-card p {
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .event-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .participate-button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background: transparent;
+            color: #0f0;
+            border: 2px solid #0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 20px;
+        }
+
+        .participate-button:hover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Footer Styles */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #0f0;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            color: #0f0;
+            text-decoration: none;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: #0f0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            color: #0f0;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #0f0;
+            opacity: 0.8;
+        }
+
+        .designer-watermark {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #0f0;
+            opacity: 0.6;
+            text-align: right;
+        }
+
+        .management-section {
+    padding: 4rem 2rem;
+    background: rgba(0, 0, 0, 0.8);
+    border-top: 2px solid #0f0;
+}
+
+.management-section h2 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    color: #0f0;
+}
+
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.management-card {
+    background: rgba(0, 255, 0, 0.05);
+    border: 1px solid #0f0;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.management-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+}
+
+.management-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: 0.5s;
+}
+
+.management-card:hover::before {
+    transform: translateX(100%);
+}
+
+.management-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #0f0;
+    padding: 5px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.management-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.management-name {
+    font-size: 1.5rem;
+    color: #0f0;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.management-designation {
+    font-size: 1rem;
+    color: #0f0;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    color: #0f0;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    transform: scale(1.2);
+    text-shadow: 0 0 10px #0f0;
+}
+
+.binary-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+        rgba(0, 255, 0, 0.1) 25%, 
+        transparent 25%, 
+        transparent 75%, 
+        rgba(0, 255, 0, 0.1) 75%);
+    pointer-events: none;
+    opacity: 0.1;
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <span class="glitch" data-text="[CYBER WARRIERS]">[CYBER WARRIERS]</span>
+                <span class="logo-tagline">Defending the Digital Frontier</span>
+            </a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <div class="dropdown">
+                    <span>Events</span>
+                    <div class="dropdown-content">
+                        <a href="#upcoming-events">Upcoming Events</a>
+                        <a href="#past-events">Past Events</a>
+                        <a href="#event-calendar">Event Calendar</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <span>Resources</span>
+                    <div class="dropdown-content">
+                        <a href="#tutorials">Tutorials</a>
+                        <a href="#tools">Tools</a>
+                        <a href="#articles">Articles</a>
+                    </div>
+                </div>
+                <a href="#contact">Contact</a>
+                <div class="login-button">
+                    <div class="login-button-inner">
+                        <div class="login-button-face front">Login</div>
+                        <div class="login-button-face back">Enter</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content section" id="home">
+        <h1 class="glitch" data-text="CyberSecurity Club">CyberSecurity Club</h1>
+        <p>Join the elite force of digital defenders. Learn, hack, and protect in our cutting-edge cybersecurity community.</p>
+        <button class="cta-button">JOIN THE NETWORK</button>
+    </div>
+
+    <div class="about-us section" id="about">
+        <div class="about-us-content">
+            <h2 class="glitch" data-text="About Us">About Us</h2>
+            <p>We are the vigilant guardians of the digital realm, tirelessly working to protect the cyber landscape from threats both known and unknown. Our members are trained in the art of ethical hacking, using their skills to identify vulnerabilities and strengthen defenses against cyber attacks. We push the boundaries of cybersecurity, developing cutting-edge solutions to stay ahead of evolving threats in the digital world.</p>
+        </div>
+        <div class="about-us-image">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="300" height="300">
+                <g class="computer">
+                    <rect x="96" y="96" width="320" height="240" rx="16" ry="16" fill="none" stroke="#0f0" stroke-width="8"/>
+                    <rect x="64" y="336" width="384" height="32" rx="8" ry="8" fill="none" stroke="#0f0" stroke-width="8"/>
+                    <rect x="224" y="368" width="64" height="48" fill="none" stroke="#0f0" stroke-width="8"/>
+                    <line x1="160" y1="416" x2="352" y2="416" stroke="#0f0" stroke-width="8"/>
+                </g>
+                <g class="warning-sign">
+                    <path d="M256 140 L306 210 H206 Z" fill="none" stroke="#ff0" stroke-width="8"/>
+                    <text x="256" y="195" fill="#ff0" font-size="48" text-anchor="middle">!</text>
+                </g>
+                <g class="error-message">
+                    <text x="256" y="250" fill="#0f0" font-size="24" text-anchor="middle">ERROR</text>
+                    <text x="256" y="280" fill="#0f0" font-size="20" text-anchor="middle">404 NOT FOUND</text>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <div class="latest-events section" id="events">
+        <h2 class="glitch" data-text="Latest Events">Latest Events</h2>
+        <div class="events-container">
+            <div class="event-card">
+                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cyber Defense Workshop">
+                <h3>Cyber Defense Workshop</h3>
+                <p>Learn the latest techniques in cyber defense from industry experts. Hands-on training included.</p>
+                <button class="participate-button">Participate Now</button>
+            </div>
+            <div class="event-card">
+                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Ethical Hacking Competition">
+                <h3>Ethical Hacking Competition</h3>
+                <p>Test your skills against other hackers in our annual ethical hacking competition. Great prizes to be won!</p>
+                <button class="participate-button">Participate Now</button>
+            </div>
+            <div class="event-card">
+                <img src="https://www.secion.de/assets/images/9/secion-cyber-security-workshop-01-816bbe24.jpg" alt="Cybersecurity Career Fair">
+                <h3>Cybersecurity Career Fair</h3>
+                <p>Connect with top companies in the cybersecurity industry. Bring your resume and be ready to impress!</p>
+                <button class="participate-button">Participate Now</button>
+            </div>
+        </div>
+    </div>
+
+<div class="management-section section" id="management">
+    <h2 class="glitch" data-text="Management Heads" align="center">Management Heads</h2>
+    <div class="management-grid">
+        <!-- President -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="John Doe">
+            </div>
+            <h3 class="management-name">User 1</h3>
+            <p class="management-designation">President</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+
+        <!-- Vice President -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="Jane Smith">
+            </div>
+            <h3 class="management-name">User 2</h3>
+            <p class="management-designation">Vice President</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+
+        <!-- Technical Head -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="Mike Johnson">
+            </div>
+            <h3 class="management-name">user 3</h3>
+            <p class="management-designation">Technical Head</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+
+        <!-- Event Coordinator -->
+        <div class="management-card">
+            <div class="management-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4WdhdzVmMpbLBtUoewasFi-1BMvFDZ0tkQA&s" alt="Sarah Wilson">
+            </div>
+            <h3 class="management-name">User 4</h3>
+            <p class="management-designation">Event Coordinator</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="binary-overlay"></div>
+        </div>
+    </div>
+</div>
+</div>
+    <footer>
+        <div class="footer-content">
+            <a href="#" class="footer-logo">[CYBER WARRIERS]</a>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#events">Events</a>
+                <a href="#resources">Our Heads</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="social-icons">
+                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+        <div class="copyright">
+            Copyright &copy; 2023 CyberSecurity Club. All rights reserved.
+        </div>
+        <div class="designer-watermark">
+            Designed by ADJS Developers
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create Matrix-like rain effect
+        const particlesCount = 5000;
+        const positions = new Float32Array(particlesCount * 3);
+        const speeds = new Float32Array(particlesCount);
+
+        for(let i = 0; i < particlesCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 10;
+            positions[i * 3 + 1] = Math.random() * 10;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+            speeds[i] = 0.01 + Math.random() * 0.02;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x00ff00,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        camera.position.z = 5;
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const positions = points.geometry.attributes.position.array;
+
+            for(let i = 0; i < particlesCount; i++) {
+                positions[i * 3 + 1] -= speeds[i];
+
+                if(positions[i * 3 + 1] < -5) {
+                    positions[i * 3 + 1] = 5;
+                }
+            }
+
+            points.geometry.attributes.position.needsUpdate = true;
+            points.rotation.y += 0.001;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Mouse interaction
+        document.addEventListener('mousemove', (event) => {
+            const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            points.rotation.x += mouseY * 0.001;
+            points.rotation.y += mouseX * 0.001;
+        });
+
+        // Improved section transition
+        const sections = document.querySelectorAll('.section');
+        const options = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: "-100px"
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, options);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
