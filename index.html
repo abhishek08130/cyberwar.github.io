@@ -795,7 +795,7 @@
 </head>
 <body>
     <audio autoplay loop>
-        <source src="tests.mp3" type="audio/mp3">
+        <source src="hios.mp3" type="audio/mp3">
         Your browser does not support the audio tag.
       </audio>
     <nav>
@@ -810,12 +810,14 @@
                 <a href="#about">About</a>
                 <a href="#events">Events</a>
                 <a href="#contact">Contact</a>
-                <div class="login-button">
-                    <div class="login-button-inner">
-                        <div class="login-button-face front">Login</div>
-                        <div class="login-button-face back">Enter</div>
+                <a href="lgn.html" class="login-button">
+                    <div class="login-button-link">
+                        <div class="login-button-inner">
+                            <div class="login-button-face front">Login</div>
+                            <div class="login-button-face back">Enter</div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </nav>
@@ -894,6 +896,13 @@
     <div class="content section" id="home">
         <div class="content-wrapper">
             <h1 class="glitch" data-text="CyberSecurity Club">CyberSecurity Club</h1>
+            <style>
+                @media screen and (max-width: 768px) {
+                    .glitch {
+                        font-size: 4rem;
+                    }
+                }
+            </style>
             <p class="tagline">Join the elite force of digital defenders.</p>
             <p class="description">Learn, hack, and protect in our cutting-edge cybersecurity community.</p>
             <div class="cta-container">
