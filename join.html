@@ -23,12 +23,13 @@
         }
 
         .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));
+            padding: 20px;
         }
 
         .cyber-grid {
@@ -51,18 +52,19 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
             position: relative;
         }
 
         .join-section {
             background: rgba(0,0,0,0.9);
-            padding: 3rem;
+            padding: clamp(1.5rem, 5vw, 3rem);
             border: 2px solid #0f0;
-            border-radius: 0;
+            border-radius: 10px;
             box-shadow: 0 0 30px rgba(0,255,0,0.3);
             backdrop-filter: blur(10px);
             position: relative;
@@ -92,7 +94,7 @@
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             margin-bottom: 2rem;
             text-shadow: 0 0 10px #0f0;
             position: relative;
@@ -111,18 +113,20 @@
 
         .roles {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1rem, 3vw, 2rem);
             margin: 3rem 0;
         }
 
         .role-card {
-            padding: 2rem;
+            padding: clamp(1.5rem, 3vw, 2rem);
             border: 1px solid #0f0;
             background: rgba(0,20,0,0.3);
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
         }
 
         .role-card::before {
@@ -141,26 +145,26 @@
         }
 
         .role-card:hover {
-            transform: translateY(-15px) scale(1.05);
+            transform: translateY(-15px) scale(1.02);
             box-shadow: 0 0 50px rgba(0,255,0,0.4);
             background: rgba(0,40,0,0.4);
         }
 
         .role-card i {
-            font-size: 3rem;
+            font-size: clamp(2rem, 4vw, 3rem);
             margin-bottom: 1rem;
             animation: float 3s ease-in-out infinite;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
         }
 
         .apply-btn {
             display: inline-block;
-            padding: 1rem 3rem;
-            font-size: 1.2rem;
+            padding: clamp(0.8rem, 2vw, 1rem) clamp(2rem, 4vw, 3rem);
+            font-size: clamp(1rem, 2vw, 1.2rem);
             background: transparent;
             color: #0f0;
             border: 2px solid #0f0;
@@ -172,6 +176,7 @@
             margin-top: 2rem;
             text-transform: uppercase;
             letter-spacing: 2px;
+            border-radius: 5px;
         }
 
         .apply-btn::before {
@@ -205,6 +210,7 @@
             margin: 0.5rem 0;
             position: relative;
             padding-left: 1.5rem;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
         }
 
         li::before {
@@ -213,6 +219,56 @@
             left: 0;
             color: #0f0;
             animation: blink 1s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .join-section {
+                margin: 1rem;
+            }
+            
+            .role-card {
+                margin-bottom: 1rem;
+            }
+
+            h1 i {
+                display: block;
+                margin-bottom: 1rem;
+            }
+
+            .apply-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .roles {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .join-section {
+                background: rgba(0,0,0,0.95);
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .cyber-grid,
+            .role-card i,
+            .apply-btn::before {
+                animation: none;
+            }
         }
     </style>
 </head>
@@ -266,17 +322,36 @@
     </section>
 
     <script>
-        // Enhanced hover effects for role cards
+        // Enhanced hover and touch effects for role cards
         document.querySelectorAll('.role-card').forEach(card => {
-            card.addEventListener('mouseover', () => {
+            const handleEnter = () => {
                 card.style.borderColor = '#00ff00';
                 card.style.transform = 'translateY(-15px) scale(1.05)';
                 card.style.boxShadow = '0 0 50px rgba(0,255,0,0.4)';
-            });
-            card.addEventListener('mouseout', () => {
+            };
+
+            const handleLeave = () => {
                 card.style.borderColor = '#0f0';
                 card.style.transform = 'none';
                 card.style.boxShadow = 'none';
+            };
+
+            // Mouse events
+            card.addEventListener('mouseover', handleEnter);
+            card.addEventListener('mouseout', handleLeave);
+
+            // Touch events
+            card.addEventListener('touchstart', handleEnter);
+            card.addEventListener('touchend', handleLeave);
+        });
+
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
             });
         });
     </script>
