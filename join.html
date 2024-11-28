@@ -15,343 +15,196 @@
         }
 
         body {
-            background: #000;
-            color: #0f0;
+            background: #0a0a0a;
+            color: #00ff9d;
             line-height: 1.6;
-            overflow-x: hidden;
-            cursor: crosshair;
         }
 
         .hero {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));
-            padding: 20px;
-        }
-
-        .cyber-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px) 0 0 / 30px 30px,
-                linear-gradient(rgba(0,255,0,0.1) 1px, transparent 1px) 0 0 / 30px 30px;
-            animation: gridMove 15s linear infinite;
-            z-index: -1;
-            transform: perspective(1000px) rotateX(60deg);
-        }
-
-        @keyframes gridMove {
-            0% { transform: perspective(1000px) rotateX(60deg) translateY(0); }
-            100% { transform: perspective(1000px) rotateX(60deg) translateY(30px); }
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            padding: 4rem 2rem;
         }
 
         .container {
-            width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 1rem;
+        }
+
+        .header {
             text-align: center;
-            position: relative;
-        }
-
-        .join-section {
-            background: rgba(0,0,0,0.9);
-            padding: clamp(1.5rem, 5vw, 3rem);
-            border: 2px solid #0f0;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0,255,0,0.3);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .join-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(0,255,0,0.1) 10px,
-                rgba(0,255,0,0.1) 20px
-            );
-            animation: scanline 10s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
-            100% { transform: translateX(-50%) translateY(-50%) rotate(360deg); }
+            margin-bottom: 5rem;
         }
 
         h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 2rem;
-            text-shadow: 0 0 10px #0f0;
-            position: relative;
-            display: inline-block;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #00ff9d;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0,255,157,0.5);
         }
 
-        h1::after {
-            content: '_';
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        .subtitle {
+            font-size: 1.5rem;
+            color: #00b36e;
         }
 
         .roles {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: clamp(1rem, 3vw, 2rem);
-            margin: 3rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            justify-content: center;
+            margin: 4rem 0;
         }
 
         .role-card {
-            padding: clamp(1.5rem, 3vw, 2rem);
-            border: 1px solid #0f0;
-            background: rgba(0,20,0,0.3);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
-            border-radius: 8px;
-            backdrop-filter: blur(5px);
-        }
-
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .role-card:hover::before {
-            left: 100%;
+            flex: 0 1 400px;
+            background: rgba(0,30,20,0.3);
+            border: 1px solid #00ff9d;
+            padding: 2.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .role-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 0 50px rgba(0,255,0,0.4);
-            background: rgba(0,40,0,0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,255,157,0.2);
         }
 
         .role-card i {
-            font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 1rem;
-            animation: float 3s ease-in-out infinite;
+            font-size: 3rem;
+            color: #00ff9d;
+            margin-bottom: 1.5rem;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+        .role-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00ff9d;
+        }
+
+        .role-card p {
+            color: #00b36e;
+            margin-bottom: 1.5rem;
+        }
+
+        .role-card ul {
+            list-style: none;
+        }
+
+        .role-card li {
+            padding: 0.5rem 0;
+            color: #00cc7a;
+            font-size: 1.1rem;
+        }
+
+        .role-card li:before {
+            content: '⟩';
+            margin-right: 10px;
+            color: #00ff9d;
         }
 
         .apply-btn {
             display: inline-block;
-            padding: clamp(0.8rem, 2vw, 1rem) clamp(2rem, 4vw, 3rem);
-            font-size: clamp(1rem, 2vw, 1.2rem);
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
             background: transparent;
-            color: #0f0;
-            border: 2px solid #0f0;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
+            color: #00ff9d;
+            border: 2px solid #00ff9d;
+            border-radius: 30px;
             text-decoration: none;
-            margin-top: 2rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            border-radius: 5px;
-        }
-
-        .apply-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.4), transparent);
-            transition: 0.5s;
-        }
-
-        .apply-btn:hover::before {
-            left: 100%;
+            transition: all 0.3s ease;
+            margin-top: 3rem;
         }
 
         .apply-btn:hover {
-            background: #0f0;
+            background: #00ff9d;
             color: #000;
-            box-shadow: 0 0 30px rgba(0,255,0,0.6);
-            transform: scale(1.1);
-        }
-
-        ul {
-            list-style-type: none;
-            margin-top: 1rem;
-        }
-
-        li {
-            margin: 0.5rem 0;
-            position: relative;
-            padding-left: 1.5rem;
-            font-size: clamp(0.9rem, 1.5vw, 1rem);
-        }
-
-        li::before {
-            content: '>';
-            position: absolute;
-            left: 0;
-            color: #0f0;
-            animation: blink 1s infinite;
+            box-shadow: 0 0 30px rgba(0,255,157,0.4);
         }
 
         @media (max-width: 768px) {
-            .join-section {
-                margin: 1rem;
-            }
-            
-            .role-card {
-                margin-bottom: 1rem;
-            }
-
-            h1 i {
-                display: block;
-                margin-bottom: 1rem;
-            }
-
-            .apply-btn {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.5rem;
-            }
-
-            .roles {
-                grid-template-columns: 1fr;
+            .hero {
+                padding: 2rem 1rem;
             }
 
             h1 {
-                font-size: 1.8rem;
+                font-size: 2.5rem;
+            }
+
+            .role-card {
+                flex: 0 1 100%;
             }
         }
 
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            .join-section {
-                background: rgba(0,0,0,0.95);
-            }
-        }
-
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
-            .cyber-grid,
-            .role-card i,
-            .apply-btn::before {
-                animation: none;
+            .role-card {
+                transition: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="cyber-grid"></div>
-    
     <section class="hero">
         <div class="container">
-            <div class="join-section">
-                <h1><i class="fas fa-shield-alt"></i> Initialize: Cyber Defense Protocol</h1>
-                <p>Enter the Matrix. Join the Elite. Defend the Digital Realm.</p>
+            <div class="header">
+                <h1>Join the Digital Elite</h1>
+                <p class="subtitle">Become part of the next generation of cyber defenders</p>
+            </div>
 
-                <div class="roles">
-                    <div class="role-card">
-                        <i class="fas fa-code"></i>
-                        <h3>Code Warrior</h3>
-                        <p>Forge the digital shields that protect our realm</p>
-                        <ul>
-                            <li>Master of the Full-Stack Arts</li>
-                            <li>Guardian of Clean Code</li>
-                            <li>Architect of Digital Fortresses</li>
-                        </ul>
-                    </div>
-
-                    <div class="role-card">
-                        <i class="fas fa-bug"></i>
-                        <h3>Digital Detective</h3>
-                        <p>Hunt vulnerabilities in the shadows of cyberspace</p>
-                        <ul>
-                            <li>Master of Penetration Arts</li>
-                            <li>Vulnerability Oracle</li>
-                            <li>Security Mastermind</li>
-                        </ul>
-                    </div>
-
-                    <div class="role-card">
-                        <i class="fas fa-robot"></i>
-                        <h3>Neural Network Sentinel</h3>
-                        <p>Command AI armies in the war against cyber threats</p>
-                        <ul>
-                            <li>Neural Network Architect</li>
-                            <li>Threat Pattern Analyst</li>
-                            <li>Autonomous Defense Engineer</li>
-                        </ul>
-                    </div>
+            <div class="roles">
+                <div class="role-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Code Warrior</h3>
+                    <p>Master the art of secure development and defensive programming</p>
+                    <ul>
+                        <li>Full-Stack Security Development</li>
+                        <li>Secure Code Architecture</li>
+                        <li>Defense-in-Depth Implementation</li>
+                    </ul>
                 </div>
 
-                <a href="#" class="apply-btn">Initialize Protocol <i class="fas fa-terminal"></i></a>
+                <div class="role-card">
+                    <i class="fas fa-bug"></i>
+                    <h3>Security Specialist</h3>
+                    <p>Lead the charge in identifying and eliminating security threats</p>
+                    <ul>
+                        <li>Penetration Testing</li>
+                        <li>Vulnerability Assessment</li>
+                        <li>Security Architecture Design</li>
+                    </ul>
+                </div>
+
+                <div class="role-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI Security Engineer</h3>
+                    <p>Develop intelligent systems for advanced threat detection</p>
+                    <ul>
+                        <li>Machine Learning for Security</li>
+                        <li>Automated Threat Response</li>
+                        <li>Predictive Security Analytics</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="#" class="apply-btn">Join Now <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
 
     <script>
-        // Enhanced hover and touch effects for role cards
         document.querySelectorAll('.role-card').forEach(card => {
-            const handleEnter = () => {
-                card.style.borderColor = '#00ff00';
-                card.style.transform = 'translateY(-15px) scale(1.05)';
-                card.style.boxShadow = '0 0 50px rgba(0,255,0,0.4)';
-            };
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px)';
+            });
 
-            const handleLeave = () => {
-                card.style.borderColor = '#0f0';
-                card.style.transform = 'none';
-                card.style.boxShadow = 'none';
-            };
-
-            // Mouse events
-            card.addEventListener('mouseover', handleEnter);
-            card.addEventListener('mouseout', handleLeave);
-
-            // Touch events
-            card.addEventListener('touchstart', handleEnter);
-            card.addEventListener('touchend', handleLeave);
-        });
-
-        // Add smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
             });
         });
     </script>
