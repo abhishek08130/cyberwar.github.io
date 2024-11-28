@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join the Digital Resistance</title>
+    <title>Join Our Development Team</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -18,22 +18,45 @@
             background: #0a0a0a;
             color: #00ff9d;
             line-height: 1.6;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
 
         .hero {
             min-height: 100vh;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            position: relative;
             padding: 4rem 2rem;
+            transform-style: preserve-3d;
+            perspective: 2000px;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
         }
 
         .header {
             text-align: center;
             margin-bottom: 5rem;
+            position: relative;
+            transform: translateZ(50px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateZ(50px); }
+            50% { transform: translateZ(80px); }
         }
 
         h1 {
@@ -43,6 +66,12 @@
             text-transform: uppercase;
             letter-spacing: 4px;
             text-shadow: 0 0 20px rgba(0,255,157,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0,255,157,0.5); }
+            to { text-shadow: 0 0 30px rgba(0,255,157,0.8), 0 0 40px rgba(0,255,157,0.3); }
         }
 
         .subtitle {
@@ -56,6 +85,8 @@
             gap: 3rem;
             justify-content: center;
             margin: 4rem 0;
+            position: relative;
+            transform-style: preserve-3d;
         }
 
         .role-card {
@@ -65,11 +96,14 @@
             padding: 2.5rem;
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.5s ease;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
         }
 
         .role-card:hover {
-            transform: translateY(-10px);
+            transform: translateZ(50px) rotateX(5deg) rotateY(5deg);
             box-shadow: 0 10px 30px rgba(0,255,157,0.2);
         }
 
@@ -77,21 +111,25 @@
             font-size: 3rem;
             color: #00ff9d;
             margin-bottom: 1.5rem;
+            transform: translateZ(30px);
         }
 
         .role-card h3 {
             font-size: 2rem;
             margin-bottom: 1rem;
             color: #00ff9d;
+            transform: translateZ(25px);
         }
 
         .role-card p {
             color: #00b36e;
             margin-bottom: 1.5rem;
+            transform: translateZ(20px);
         }
 
         .role-card ul {
             list-style: none;
+            transform: translateZ(15px);
         }
 
         .role-card li {
@@ -119,9 +157,12 @@
             letter-spacing: 2px;
             transition: all 0.3s ease;
             margin-top: 3rem;
+            position: relative;
+            transform: translateZ(40px);
         }
 
         .apply-btn:hover {
+            transform: translateZ(60px);
             background: #00ff9d;
             color: #000;
             box-shadow: 0 0 30px rgba(0,255,157,0.4);
@@ -130,6 +171,7 @@
         @media (max-width: 768px) {
             .hero {
                 padding: 2rem 1rem;
+                perspective: 1000px;
             }
 
             h1 {
@@ -142,69 +184,130 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .role-card {
-                transition: none;
+            .role-card, .header, .apply-btn {
+                transform: none !important;
+                transition: none !important;
+                animation: none !important;
             }
         }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
     <section class="hero">
         <div class="container">
             <div class="header">
-                <h1>Join the Digital Elite</h1>
-                <p class="subtitle">Become part of the next generation of cyber defenders</p>
+                <h1>Join Our Dev Team</h1>
+                <p class="subtitle">Help us build the next generation of cybersecurity software</p>
             </div>
 
             <div class="roles">
                 <div class="role-card">
-                    <i class="fas fa-code"></i>
-                    <h3>Code Warrior</h3>
-                    <p>Master the art of secure development and defensive programming</p>
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Frontend Developer</h3>
+                    <p>Create intuitive and secure user interfaces for our cybersecurity tools</p>
                     <ul>
-                        <li>Full-Stack Security Development</li>
-                        <li>Secure Code Architecture</li>
-                        <li>Defense-in-Depth Implementation</li>
+                        <li>React/Vue.js Development</li>
+                        <li>UI/UX Implementation</li>
+                        <li>Security-First Design</li>
                     </ul>
                 </div>
 
                 <div class="role-card">
-                    <i class="fas fa-bug"></i>
-                    <h3>Security Specialist</h3>
-                    <p>Lead the charge in identifying and eliminating security threats</p>
+                    <i class="fas fa-server"></i>
+                    <h3>Backend Developer</h3>
+                    <p>Build robust and secure server-side applications</p>
                     <ul>
-                        <li>Penetration Testing</li>
-                        <li>Vulnerability Assessment</li>
-                        <li>Security Architecture Design</li>
+                        <li>API Development</li>
+                        <li>Database Architecture</li>
+                        <li>Security Systems Integration</li>
                     </ul>
                 </div>
 
                 <div class="role-card">
-                    <i class="fas fa-robot"></i>
-                    <h3>AI Security Engineer</h3>
-                    <p>Develop intelligent systems for advanced threat detection</p>
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Security Developer</h3>
+                    <p>Develop core security features and tools</p>
                     <ul>
-                        <li>Machine Learning for Security</li>
-                        <li>Automated Threat Response</li>
-                        <li>Predictive Security Analytics</li>
+                        <li>Security Tool Development</li>
+                        <li>Encryption Implementation</li>
+                        <li>Vulnerability Scanner Creation</li>
                     </ul>
                 </div>
             </div>
 
             <div style="text-align: center;">
-                <a href="#" class="apply-btn">Join Now <i class="fas fa-arrow-right"></i></a>
+                <a href="#" class="apply-btn">Apply Now <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
 
     <script>
+        // Three.js background setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#bg-canvas'),
+            antialias: true
+        });
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.setZ(30);
+
+        // Create grid of particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.1,
+            color: 0x00ff9d,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.x += 0.0005;
+            particlesMesh.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Responsive canvas
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Card hover effects
         document.querySelectorAll('.role-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-10px)';
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const rotateX = (y - rect.height / 2) / 20;
+                const rotateY = -(x - rect.width / 2) / 20;
+                
+                card.style.transform = `translateZ(50px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             });
 
             card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0)';
+                card.style.transform = 'translateZ(20px)';
             });
         });
     </script>
