@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Message Broadcaster</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'SF Mono', 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(45, 45, 45, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #25D366;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #25D366;
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        button {
+            background: #25D366;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background: #128C7E;
+        }
+
+        #rejectedList {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 5px;
+            display: none;
+        }
+
+        #rejectedList h3 {
+            color: #ff4444;
+            margin-bottom: 10px;
+        }
+
+        .rejected-number {
+            color: #ff8888;
+            margin: 5px 0;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(37, 211, 102, 0.1);
+            border-radius: 5px;
+        }
+
+        .test-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(37, 211, 102, 0.1);
+            border-radius: 5px;
+        }
+
+        #testNumber {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #25D366;
+            border-radius: 5px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WhatsApp Message Broadcaster</h1>
+        
+        <!-- Test Message Section -->
+        <div class="test-section">
+            <h3>Test Your Message</h3>
+            <input type="text" id="testNumber" placeholder="Enter test phone number (with country code)">
+            <textarea id="testMessageInput" placeholder="Type your test message here..."></textarea>
+            <button id="testBtn">Send Test Message</button>
+        </div>
+
+        <!-- Main Broadcast Section -->
+        <div class="broadcast-section">
+            <h3>Broadcast Message</h3>
+            <textarea id="messageInput" placeholder="Type your broadcast message here..."></textarea>
+            <button id="broadcastBtn">Broadcast Message</button>
+        </div>
+
+        <!-- Review Section -->
+        <div class="review-section">
+            <h3>Message Review</h3>
+            <p>Recipients: <span id="recipientCount">0</span></p>
+            <p>Message Length: <span id="messageLength">0</span> characters</p>
+            <p>Estimated Time: <span id="estimatedTime">0</span> minutes</p>
+        </div>
+
+        <div id="rejectedList">
+            <h3>Failed Deliveries</h3>
+            <div id="rejectedNumbers"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration and initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxd6bO0LUxUQfmV7BqTjMojAgO0jv7Gaw",
+            authDomain: "cybers-a6bd5.firebaseapp.com", 
+            projectId: "cybers-a6bd5",
+            storageBucket: "cybers-a6bd5.firebasestorage.app",
+            messagingSenderId: "169271146479",
+            appId: "1:169271146479:web:428a8cbe4e41c9eedfa81a",
+            measurementId: "G-HRG6Q1DRL2"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Update review section
+        function updateReview(message) {
+            document.getElementById('messageLength').textContent = message.length;
+            const estimatedTimePerMessage = 10; // seconds
+            const recipientCount = document.getElementById('recipientCount').textContent;
+            const totalTime = Math.ceil((estimatedTimePerMessage * recipientCount) / 60);
+            document.getElementById('estimatedTime').textContent = totalTime;
+        }
+
+        // Test message function
+        async function sendTestMessage() {
+            const testNumber = document.getElementById('testNumber').value.trim();
+            const message = document.getElementById('testMessageInput').value.trim();
+            
+            if (!testNumber || !message) {
+                alert('Please enter both test number and message');
+                return;
+            }
+
+            try {
+                const formattedNumber = testNumber.startsWith('+') ? testNumber : '+' + testNumber;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappLink = `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
+                window.open(whatsappLink, '_blank');
+            } catch(error) {
+                console.error("Error sending test message:", error);
+                alert("Error sending test message. Please check console for details.");
+            }
+        }
+
+        async function broadcastMessage() {
+            try {
+                const message = document.getElementById('messageInput').value.trim();
+                const rejectedList = document.getElementById('rejectedList');
+                const rejectedNumbers = document.getElementById('rejectedNumbers');
+                
+                if (!message) {
+                    alert('Please enter a message to broadcast');
+                    return;
+                }
+
+                // Clear previous rejected numbers
+                rejectedNumbers.innerHTML = '';
+                rejectedList.style.display = 'none';
+
+                // Fetch phone numbers from Firestore
+                const querySnapshot = await db.collection('users').get();
+                const phoneNumbers = [];
+                const failedDeliveries = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    if (userData.phone) {
+                        let phoneNumber = userData.phone;
+                        if (!phoneNumber.startsWith('+')) {
+                            phoneNumber = '+91' + phoneNumber;
+                        }
+                        phoneNumbers.push({
+                            number: phoneNumber,
+                            name: userData.fullName || 'Unknown'
+                        });
+                    }
+                });
+
+                // Update recipient count
+                document.getElementById('recipientCount').textContent = phoneNumbers.length;
+                updateReview(message);
+
+                // Create broadcast links for each number
+                for(const user of phoneNumbers) {
+                    try {
+                        const encodedMessage = encodeURIComponent(message);
+                        const whatsappLink = `https://wa.me/${user.number}?text=${encodedMessage}`;
+                        const windowRef = window.open(whatsappLink, '_blank');
+                        
+                        if(windowRef === null) {
+                            failedDeliveries.push(user);
+                        }
+                    } catch(err) {
+                        failedDeliveries.push(user);
+                    }
+                }
+
+                // Display failed deliveries if any
+                if(failedDeliveries.length > 0) {
+                    rejectedList.style.display = 'block';
+                    failedDeliveries.forEach(user => {
+                        const div = document.createElement('div');
+                        div.className = 'rejected-number';
+                        div.textContent = `${user.name} (${user.number})`;
+                        rejectedNumbers.appendChild(div);
+                    });
+                }
+
+            } catch (error) {
+                console.error("Error broadcasting message:", error);
+                alert("Error broadcasting message. Please check console for details.");
+            }
+        }
+
+        // Event listeners
+        document.getElementById('broadcastBtn').addEventListener('click', broadcastMessage);
+        document.getElementById('testBtn').addEventListener('click', sendTestMessage);
+        document.getElementById('messageInput').addEventListener('input', (e) => updateReview(e.target.value));
+    </script>
+</body>
+</html>

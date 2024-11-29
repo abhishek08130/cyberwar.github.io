@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Developer Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Update Firebase imports -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+            overflow-x: hidden;
+            perspective: 2000px;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(45, 45, 45, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transform: translateZ(50px);
+            position: relative;
+        }
+
+        .window-header {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: rgba(58, 58, 58, 0.9);
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin: -20px -20px 20px -20px;
+            transform: translateZ(20px);
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 6px;
+            margin-left: 8px;
+        }
+
+        .window-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transform: translateZ(10px);
+        }
+
+        .close { background: #ff5f56; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #27c93f; }
+
+        h1 {
+            text-align: center; /* Changed from left to center */
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            border-bottom: 1px solid #4a4a4a;
+            padding-bottom: 0.5rem;
+            transform: translateZ(30px);
+        }
+
+        h1::before {
+            content: "% ";
+            color: #27c93f;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            border-left: 2px solid #27c93f;
+            padding-left: 1rem;
+            transform: translateZ(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .form-group:hover {
+            transform: translateZ(40px);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        label::before {
+            content: "→ ";
+            color: #27c93f;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(58, 58, 58, 0.8);
+            border: 1px solid #4a4a4a;
+            color: #fff;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            border-radius: 4px;
+            transform: translateZ(10px);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #27c93f;
+            box-shadow: 0 0 5px rgba(39, 201, 63, 0.3);
+            transform: translateZ(15px);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            border: 1px solid #4a4a4a;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+            background: rgba(58, 58, 58, 0.8);
+            transform: translateZ(25px);
+        }
+
+        .skill-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transform: translateZ(5px);
+            transition: transform 0.2s ease;
+        }
+
+        .skill-checkbox:hover {
+            transform: translateZ(15px);
+        }
+
+        .skill-checkbox input[type="checkbox"] {
+            width: auto;
+            accent-color: #27c93f;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #27c93f;
+            color: #000;
+            border: none;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            cursor: pointer;
+            margin-top: 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            transform: translateZ(40px);
+            position: relative;
+        }
+
+        .submit-btn:hover {
+            background: #1fa832;
+            transform: translateZ(50px);
+        }
+
+        .submit-btn::before {
+            content: "% ";
+        }
+
+        .submit-btn.processing {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .submit-btn.processing::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 3px solid transparent;
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                transform: translateZ(20px);
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Terminal cursor effect */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        h1::after {
+            content: "▋";
+            animation: blink 1s infinite;
+            color: #27c93f;
+        }
+
+        /* Terminal overlay effect */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.03) 0px,
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            opacity: 0.5;
+            transform: translateZ(5px);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div class="container">
+        <div class="window-header">
+            <div class="window-buttons">
+                <div class="window-button close"></div>
+                <div class="window-button minimize"></div>
+                <div class="window-button maximize"></div>
+            </div>
+        </div>
+        <h1>Software Developer Application</h1>
+        
+        <form class="application-form" id="devApplicationForm">
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="enrollmentNumber">Enrollment Number (UU) *</label>
+                <input type="text" id="enrollmentNumber" name="enrollmentNumber" pattern="UU.*" required placeholder="Enter UU enrollment number">
+            </div>
+
+            <div class="form-group">
+                <label for="course">Course *</label>
+                <select id="course" name="course" required onchange="toggleSection()">
+                    <option value="">Select course</option>
+                    <option value="BCA">BCA</option>
+                    <option value="BSc IT">BSc IT</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="sectionGroup">
+                <label for="section">Section (For BCA) *</label>
+                <select id="section" name="section">
+                    <option value="">Select section</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="semester">Semester *</label>
+                <select id="semester" name="semester" required>
+                    <option value="">Select semester</option>
+                    <option value="1">1st Semester</option>
+                    <option value="3">3rd Semester</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Technical Skills *</label>
+                <div class="skills-grid">
+                    <div class="skill-checkbox">
+                        <input type="checkbox" id="javascript" name="skills[]" value="JavaScript">
+                        <label for="javascript">JavaScript</label>
+                    </div>
+                    <div class="skill-checkbox">
+                        <input type="checkbox" id="python" name="skills[]" value="Python">
+                        <label for="python">Python</label>
+                    </div>
+                    <div class="skill-checkbox">
+                        <input type="checkbox" id="java" name="skills[]" value="Java">
+                        <label for="java">Java</label>
+                    </div>
+                    <div class="skill-checkbox">
+                        <input type="checkbox" id="react" name="skills[]" value="React">
+                        <label for="react">React</label>
+                    </div>
+                    <div class="skill-checkbox">
+                        <input type="checkbox" id="nodejs" name="skills[]" value="Node.js">
+                        <label for="nodejs">Node.js</label>
+                    </div>
+                    <div class="skill-checkbox">
+                        <input type="checkbox" id="sql" name="skills[]" value="SQL">
+                        <label for="sql">SQL</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Application</button>
+        </form>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxd6bO0LUxUQfmV7BqTjMojAgO0jv7Gaw",
+            authDomain: "cybers-a6bd5.firebaseapp.com",
+            projectId: "cybers-a6bd5",
+            storageBucket: "cybers-a6bd5.firebasestorage.app",
+            messagingSenderId: "169271146479",
+            appId: "1:169271146479:web:428a8cbe4e41c9eedfa81a",
+            measurementId: "G-HRG6Q1DRL2"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Check Firestore connection
+        db.collection('test').get()
+            .then(() => {
+                console.log('Successfully connected to Firestore!');
+            })
+            .catch(error => {
+                console.error('Error connecting to Firestore:', error);
+            });
+
+        // Three.js background setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#bg-canvas'),
+            antialias: true
+        });
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.setZ(30);
+
+        // Create particles
+        function createParticles() {
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            
+            for(let i = 0; i < 2000; i++) {
+                vertices.push(
+                    THREE.MathUtils.randFloatSpread(2000), // x
+                    THREE.MathUtils.randFloatSpread(2000), // y
+                    THREE.MathUtils.randFloatSpread(2000)  // z
+                );
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            const particles = new THREE.Points(
+                geometry,
+                new THREE.PointsMaterial({ color: 0x27c93f, size: 0.7 })
+            );
+            scene.add(particles);
+            return particles;
+        }
+
+        const particles = createParticles();
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.x += 0.0001;
+            particles.rotation.y += 0.0001;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function toggleSection() {
+            const course = document.getElementById('course').value;
+            const sectionGroup = document.getElementById('sectionGroup');
+            const sectionSelect = document.getElementById('section');
+            
+            if (course === 'BSc IT') {
+                sectionGroup.style.display = 'none';
+                sectionSelect.removeAttribute('required');
+            } else {
+                sectionGroup.style.display = 'block';
+                sectionSelect.setAttribute('required', 'required');
+            }
+        }
+
+        document.getElementById('devApplicationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            submitBtn.classList.add('processing');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            
+            // Get form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                enrollmentNumber: document.getElementById('enrollmentNumber').value,
+                course: document.getElementById('course').value,
+                section: document.getElementById('section').value,
+                semester: document.getElementById('semester').value,
+                skills: Array.from(document.querySelectorAll('input[name="skills[]"]:checked')).map(cb => cb.value),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                // Check if users collection exists, if not create it
+                const usersCollection = await db.collection('users').get();
+                if (usersCollection.empty) {
+                    // Collection doesn't exist, it will be created when we add the first document
+                    console.log("Creating users collection...");
+                }
+                
+                // Add document to Firestore
+                const docRef = await db.collection('users').add(formData);
+                console.log("Registration successful! Document written with ID: ", docRef.id);
+                window.location.href = 'success.html';
+            } catch (error) {
+                console.error("Error submitting form: ", error);
+                alert('Error submitting application. Please try again.');
+            } finally {
+                submitBtn.classList.remove('processing');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Application';
+            }
+        });
+    </script>
+</body>
+</html>
