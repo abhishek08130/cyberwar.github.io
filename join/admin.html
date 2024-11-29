@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - User List</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            text-decoration: none;
+            z-index: 1000;
+            transform: translateZ(100px);
+            transition: transform 0.5s ease;
+        }
+
+        .glitch {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #00ff9d;
+            position: relative;
+            text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                         0.025em 0.04em 0 #fffc00;
+            animation: glitch 725ms infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                             0.025em 0.04em 0 #fffc00; }
+            15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                             0.025em 0.04em 0 #fffc00; }
+            16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
+                             -0.05em -0.05em 0 #fffc00; }
+            49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
+                             -0.05em -0.05em 0 #fffc00; }
+            50% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
+                             0 -0.04em 0 #fffc00; }
+            99% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
+                             0 -0.04em 0 #fffc00; }
+            100% { text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff,
+                             -0.04em -0.025em 0 #fffc00; }
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 60px auto 0;
+            background: rgba(45, 45, 45, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1200px;
+                padding: 20px;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            border-bottom: 1px solid #4a4a4a;
+            padding-bottom: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(58, 58, 58, 0.8);
+        }
+
+        th, td {
+            border: 1px solid #4a4a4a;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 768px) {
+            th, td {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+
+        th {
+            background-color: rgba(39, 201, 63, 0.2);
+            color: #27c93f;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background: rgba(39, 201, 63, 0.1);
+        }
+
+        .total-entries {
+            color: #27c93f;
+            text-align: right;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .export-btn {
+            background: #27c93f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .export-btn:hover {
+            background: #1f9d32;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .glitch {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" class="logo">
+            <span class="glitch" data-text="[CW]">[UU Cybers]</span>
+        </a>
+    </nav>
+
+    <div class="container">
+        <h1>User List</h1>
+        <div class="total-entries">Total Entries: <span id="totalEntries">0</span></div>
+        <button class="export-btn" onclick="exportToExcel()">Export to Excel</button>
+        <div class="table-wrapper">
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Enrollment Number</th>
+                        <th>Course</th>
+                        <th>Section</th>
+                        <th>Semester</th>
+                        <th>Skills</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- User data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxd6bO0LUxUQfmV7BqTjMojAgO0jv7Gaw",
+            authDomain: "cybers-a6bd5.firebaseapp.com",
+            projectId: "cybers-a6bd5",
+            storageBucket: "cybers-a6bd5.firebasestorage.app",
+            messagingSenderId: "169271146479",
+            appId: "1:169271146479:web:428a8cbe4e41c9eedfa81a",
+            measurementId: "G-HRG6Q1DRL2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Function to fetch users
+        async function fetchUsers() {
+            try {
+                const userTableBody = document.getElementById('userTableBody');
+                const totalEntriesSpan = document.getElementById('totalEntries');
+                userTableBody.innerHTML = ''; // Clear existing content
+
+                const querySnapshot = await db.collection('users').get();
+                
+                let serialNumber = 1;
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td>${userData.fullName || 'N/A'}</td>
+                        <td>${userData.email || 'N/A'}</td>
+                        <td>${userData.phone || 'N/A'}</td>
+                        <td>${userData.enrollmentNumber || 'N/A'}</td>
+                        <td>${userData.course || 'N/A'}</td>
+                        <td>${userData.section || 'N/A'}</td>
+                        <td>${userData.semester || 'N/A'}</td>
+                        <td>${userData.skills ? userData.skills.join(', ') : 'N/A'}</td>
+                        <td>${userData.timestamp ? new Date(userData.timestamp.toDate()).toLocaleString() : 'N/A'}</td>
+                    `;
+                    userTableBody.appendChild(row);
+                    serialNumber++;
+                });
+
+                // Update total entries count
+                totalEntriesSpan.textContent = querySnapshot.size;
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                alert("Error fetching users. Please check console for details.");
+            }
+        }
+
+        // Function to export table data to Excel
+        function exportToExcel() {
+            const table = document.getElementById('userTable');
+            const rows = Array.from(table.rows);
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            rows.forEach(row => {
+                const cells = Array.from(row.cells);
+                const rowData = cells.map(cell => `"${cell.textContent}"`).join(",");
+                csvContent += rowData + "\r\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "user_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Fetch users when the page loads
+        document.addEventListener('DOMContentLoaded', fetchUsers);
+    </script>
+</body>
+</html>
