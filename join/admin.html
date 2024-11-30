@@ -7,6 +7,9 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <!-- jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -154,7 +157,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px 0;
+            margin: 10px 5px;
             font-size: 0.9rem;
         }
 
@@ -184,6 +187,7 @@
         <h1>User List</h1>
         <div class="total-entries">Total Entries: <span id="totalEntries">0</span></div>
         <button class="export-btn" onclick="exportToExcel()">Export to Excel</button>
+        <button class="export-btn" onclick="exportToPDF()">Export to PDF</button>
         <div class="table-wrapper">
             <table id="userTable">
                 <thead>
@@ -280,6 +284,42 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // Function to export table data to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(16);
+            doc.text('User List', 14, 15);
+            
+            // Get table data
+            const table = document.getElementById('userTable');
+            
+            doc.autoTable({
+                html: table,
+                startY: 20,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 1,
+                },
+                columnStyles: {
+                    0: {cellWidth: 10}, // S.No
+                    1: {cellWidth: 25}, // Full Name
+                    2: {cellWidth: 35}, // Email
+                    3: {cellWidth: 20}, // Phone
+                    4: {cellWidth: 25}, // Enrollment
+                    5: {cellWidth: 15}, // Course
+                    6: {cellWidth: 15}, // Section
+                    7: {cellWidth: 15}, // Semester
+                    8: {cellWidth: 20}, // Skills
+                    9: {cellWidth: 25}, // Timestamp
+                },
+            });
+            
+            doc.save('user_data.pdf');
         }
 
         // Fetch users when the page loads
