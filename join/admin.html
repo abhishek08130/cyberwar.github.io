@@ -166,6 +166,27 @@
             background: #1f9d32;
         }
 
+        .search-container {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #4a4a4a;
+            border-radius: 5px;
+            background: rgba(30, 30, 30, 0.9);
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #27c93f;
+        }
+
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -187,6 +208,9 @@
     <div class="container">
         <h1>User List</h1>
         <div class="total-entries">Total Entries: <span id="totalEntries">0</span></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email, enrollment number..." onkeyup="searchTable()">
+        </div>
         <button class="export-btn" onclick="exportToExcel()">Export to Excel</button>
         <button class="export-btn" onclick="exportToPDF()">Export to PDF</button>
         <div class="table-wrapper">
@@ -271,6 +295,29 @@
             }
         }
 
+        // Function to search table
+        function searchTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const tbody = document.getElementById('userTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const cellText = cells[j].textContent || cells[j].innerText;
+                    if (cellText.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+
         // Function to export table data to Excel
         function exportToExcel() {
             const table = document.getElementById('userTable');
@@ -331,11 +378,8 @@
             
             doc.save('user_data.pdf');
 
-            // Log analytics event
             analytics.logEvent('export_to_pdf');
         }
-
-        // Fetch users when the page loads
         document.addEventListener('DOMContentLoaded', fetchUsers);
     </script>
 </body>
