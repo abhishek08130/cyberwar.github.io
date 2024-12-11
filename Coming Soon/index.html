@@ -21,6 +21,7 @@
             align-items: center;
             position: relative;
             overflow: hidden;
+            perspective: 1000px;
         }
 
         .matrix-bg {
@@ -29,39 +30,78 @@
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.1;
+            opacity: 0.15;
             z-index: 1;
         }
 
         .container {
             text-align: center;
-            padding: 2rem;
-            background: rgba(0, 0, 0, 0.8);
+            padding: 3rem;
+            background: rgba(0, 0, 0, 0.9);
             border: 2px solid #00ff00;
-            border-radius: 10px;
+            border-radius: 15px;
             z-index: 2;
-            max-width: 90%;
-            width: 600px;
+            max-width: 95%;
+            width: 700px;
             position: relative;
-            animation: glitch 2s infinite;
+            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            backdrop-filter: blur(5px);
+            transform-style: preserve-3d;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 4rem);
             margin-bottom: 1.5rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 255, 0, 0.3);
+        }
+
+        h1::after {
+            content: 'CYBERSEC HUB';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            color: rgba(0, 255, 0, 0.4);
+            z-index: -1;
+            animation: glitch 3s infinite;
         }
 
         .countdown {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             margin: 2rem 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .countdown-item {
+            background: rgba(0, 255, 0, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .countdown-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .countdown-label {
+            font-size: 0.6em;
+            opacity: 0.8;
+            text-transform: uppercase;
         }
 
         .description {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.3rem);
             margin-bottom: 2rem;
-            line-height: 1.6;
+            line-height: 1.8;
+            opacity: 0.9;
         }
 
         .email-form {
@@ -69,53 +109,113 @@
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 2rem;
         }
 
         input[type="email"] {
-            padding: 0.8rem;
+            padding: 1rem;
             width: 100%;
-            max-width: 300px;
-            background: transparent;
-            border: 1px solid #00ff00;
+            max-width: 400px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
             color: #00ff00;
             font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="email"]:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            transform: scale(1.02);
         }
 
         button {
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 2rem;
             background: #00ff00;
             color: #000;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
             font-family: inherit;
+            font-size: 1rem;
             text-transform: uppercase;
+            letter-spacing: 2px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         button:hover {
             background: #000;
             color: #00ff00;
-            border: 1px solid #00ff00;
+            border: 2px solid #00ff00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate3d(0, 1, 0, 0deg); }
+            50% { transform: translateY(-20px) rotate3d(0, 1, 0, 2deg); }
         }
 
         @keyframes glitch {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
+            0% { clip-path: inset(50% 0 30% 0); transform: skew(0.5deg); }
+            20% { clip-path: inset(20% 0 60% 0); transform: skew(-0.5deg); }
+            40% { clip-path: inset(40% 0 40% 0); transform: skew(0.5deg); }
+            60% { clip-path: inset(60% 0 20% 0); transform: skew(-0.5deg); }
+            80% { clip-path: inset(30% 0 50% 0); transform: skew(0.5deg); }
+            100% { clip-path: inset(50% 0 30% 0); transform: skew(-0.5deg); }
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+            .container {
+                padding: 2rem;
             }
+            
             .countdown {
-                font-size: 1.5rem;
+                grid-template-columns: repeat(2, 1fr);
             }
-            .description {
-                font-size: 1rem;
+            
+            .email-form {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .countdown-item {
+                padding: 0.5rem;
             }
         }
     </style>
@@ -129,7 +229,22 @@
             Stay tuned for cutting-edge resources, training, and collaboration opportunities.
         </div>
         <div class="countdown" id="countdown">
-            Loading...
+            <div class="countdown-item">
+                <div class="countdown-value" id="days">--</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="hours">--</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="minutes">--</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="seconds">--</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
         </div>
         <div class="email-form">
             <input type="email" placeholder="Enter your email for updates" aria-label="Email for updates">
@@ -138,21 +253,21 @@
     </div>
 
     <script>
-        // Matrix rain effect
+        // Matrix rain effect with improved performance
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const chars = "01";
-        const fontSize = 14;
-        const columns = canvas.width/fontSize;
-        const drops = [];
-
-        for(let x = 0; x < columns; x++) {
-            drops[x] = 1;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
+        resizeCanvas();
+
+        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+        const fontSize = 16;
+        const columns = Math.floor(canvas.width/fontSize);
+        const drops = new Array(columns).fill(1);
+        const rainSpeed = new Array(columns).fill(1).map(() => Math.random() * 1.5 + 0.5);
 
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -168,11 +283,12 @@
                 if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
                     drops[i] = 0;
                 
-                drops[i]++;
+                drops[i] += rainSpeed[i];
             }
+            requestAnimationFrame(draw);
         }
 
-        // Countdown timer
+        // Countdown timer with improved display
         const countdownDate = new Date();
         countdownDate.setDate(countdownDate.getDate() + 30);
 
@@ -185,17 +301,26 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById('countdown').innerHTML = 
-                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
         }
 
-        setInterval(draw, 33);
+        requestAnimationFrame(draw);
         setInterval(updateCountdown, 1000);
 
-        // Responsive canvas
+        // Responsive handling
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvas();
+                drops.length = Math.floor(canvas.width/fontSize);
+                drops.fill(1);
+                rainSpeed.length = drops.length;
+                rainSpeed.fill(1).map(() => Math.random() * 1.5 + 0.5);
+            }, 250);
         });
     </script>
 </body>
