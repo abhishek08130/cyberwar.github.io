@@ -234,6 +234,17 @@
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
         }
 
+        .copyright {
+            position: absolute;
+            bottom: 1rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #00cc00;
+            opacity: 0.7;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 2rem;
@@ -310,12 +321,15 @@
             <input type="email" placeholder="[ENTER EMAIL ADDRESS]" aria-label="Email for updates">
             <button type="button">INITIATE ACCESS</button>
         </div>
+        <div class="copyright">
+            © 2024 UU Cybers. All rights reserved.
+        </div>
     </div>
 
     <script>
         // Countdown timer
         const countdownDate = new Date();
-        countdownDate.setDate(countdownDate.getDate() + 30);
+        countdownDate.setDate(countdownDate.getDate() + 180);
 
         function updateCountdown() {
             const now = new Date().getTime();
