@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberSec Hub - Coming Soon</title>
+    <title>UU Cybers - Coming Soon</title>
     <style>
         * {
             margin: 0;
@@ -12,181 +12,106 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: #0a0a0a;
-            color: #00ff00;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
-            perspective: 1000px;
-        }
-
-        .matrix-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.15;
-            z-index: 1;
         }
 
         .container {
             text-align: center;
-            padding: 3rem;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ff00;
-            border-radius: 15px;
-            z-index: 2;
+            padding: 4rem;
+            background: #2d2d2d;
+            border-radius: 20px;
             max-width: 95%;
-            width: 700px;
-            position: relative;
-            animation: float 6s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-            backdrop-filter: blur(5px);
-            transform-style: preserve-3d;
+            width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            position: relative;
-            text-shadow: 2px 2px 4px rgba(0, 255, 0, 0.3);
-        }
-
-        h1::after {
-            content: 'CYBERSEC HUB';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 0;
-            color: rgba(0, 255, 0, 0.4);
-            z-index: -1;
-            animation: glitch 3s infinite;
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
 
         .countdown {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            margin: 2rem 0;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
         }
 
         .countdown-item {
-            background: rgba(0, 255, 0, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
+            background: #363636;
+            padding: 1.5rem;
+            border-radius: 15px;
+            min-width: 120px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .countdown-value {
-            font-size: 1.5em;
+            font-size: 2.5rem;
             font-weight: bold;
+            color: #4ecdc4;
         }
 
         .countdown-label {
-            font-size: 0.6em;
-            opacity: 0.8;
+            font-size: 0.9rem;
+            color: #a0a0a0;
             text-transform: uppercase;
+            margin-top: 0.5rem;
         }
 
         .description {
-            font-size: clamp(1rem, 2vw, 1.3rem);
-            margin-bottom: 2rem;
+            font-size: 1.2rem;
             line-height: 1.8;
-            opacity: 0.9;
+            color: #e0e0e0;
+            margin: 2rem auto;
+            max-width: 700px;
         }
 
         .email-form {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 2rem;
+            margin-top: 3rem;
         }
 
         input[type="email"] {
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             width: 100%;
             max-width: 400px;
-            background: rgba(0, 255, 0, 0.1);
-            border: 2px solid #00ff00;
-            border-radius: 8px;
-            color: #00ff00;
-            font-family: inherit;
+            background: #363636;
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            margin-bottom: 1rem;
         }
 
         input[type="email"]:focus {
-            outline: none;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-            transform: scale(1.02);
+            outline: 2px solid #4ecdc4;
         }
 
         button {
-            padding: 1rem 2rem;
-            background: #00ff00;
-            color: #000;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-family: inherit;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
-            transition: 0.5s;
-        }
-
-        button:hover::before {
-            left: 100%;
+            transition: transform 0.2s;
         }
 
         button:hover {
-            background: #000;
-            color: #00ff00;
-            border: 2px solid #00ff00;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate3d(0, 1, 0, 0deg); }
-            50% { transform: translateY(-20px) rotate3d(0, 1, 0, 2deg); }
-        }
-
-        @keyframes glitch {
-            0% { clip-path: inset(50% 0 30% 0); transform: skew(0.5deg); }
-            20% { clip-path: inset(20% 0 60% 0); transform: skew(-0.5deg); }
-            40% { clip-path: inset(40% 0 40% 0); transform: skew(0.5deg); }
-            60% { clip-path: inset(60% 0 20% 0); transform: skew(-0.5deg); }
-            80% { clip-path: inset(30% 0 50% 0); transform: skew(0.5deg); }
-            100% { clip-path: inset(50% 0 30% 0); transform: skew(-0.5deg); }
+            transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
@@ -195,17 +120,21 @@
             }
             
             .countdown {
-                grid-template-columns: repeat(2, 1fr);
+                flex-wrap: wrap;
+                gap: 1rem;
             }
             
-            .email-form {
-                flex-direction: column;
-                align-items: center;
+            .countdown-item {
+                min-width: 100px;
+                padding: 1rem;
             }
             
-            button {
-                width: 100%;
-                max-width: 400px;
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .description {
+                font-size: 1rem;
             }
         }
 
@@ -215,18 +144,24 @@
             }
             
             .countdown-item {
-                padding: 0.5rem;
+                min-width: 80px;
+                padding: 0.8rem;
+            }
+            
+            .countdown-value {
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <canvas class="matrix-bg" id="matrix"></canvas>
     <div class="container">
-        <h1>CyberSec Hub</h1>
+        <h1>UU Cybers</h1>
         <div class="description">
-            A new frontier in cybersecurity education and community building is coming. 
-            Stay tuned for cutting-edge resources, training, and collaboration opportunities.
+            Get ready for a revolutionary cybersecurity experience at Uttaranchal University! 
+            UU Cybers is about to unleash a world of ethical hacking, cybersecurity challenges, 
+            and cutting-edge tech innovations. Join our elite community of cyber warriors and 
+            shape the future of digital security.
         </div>
         <div class="countdown" id="countdown">
             <div class="countdown-item">
@@ -247,48 +182,13 @@
             </div>
         </div>
         <div class="email-form">
-            <input type="email" placeholder="Enter your email for updates" aria-label="Email for updates">
-            <button type="button">Notify Me</button>
+            <input type="email" placeholder="Enter your email for exclusive updates" aria-label="Email for updates">
+            <button type="button">Join the Mission</button>
         </div>
     </div>
 
     <script>
-        // Matrix rain effect with improved performance
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-
-        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-        const fontSize = 16;
-        const columns = Math.floor(canvas.width/fontSize);
-        const drops = new Array(columns).fill(1);
-        const rainSpeed = new Array(columns).fill(1).map(() => Math.random() * 1.5 + 0.5);
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#00ff00';
-            ctx.font = fontSize + 'px monospace';
-
-            for(let i = 0; i < drops.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-                
-                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
-                    drops[i] = 0;
-                
-                drops[i] += rainSpeed[i];
-            }
-            requestAnimationFrame(draw);
-        }
-
-        // Countdown timer with improved display
+        // Countdown timer
         const countdownDate = new Date();
         countdownDate.setDate(countdownDate.getDate() + 30);
 
@@ -307,21 +207,7 @@
             document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
         }
 
-        requestAnimationFrame(draw);
         setInterval(updateCountdown, 1000);
-
-        // Responsive handling
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                resizeCanvas();
-                drops.length = Math.floor(canvas.width/fontSize);
-                drops.fill(1);
-                rainSpeed.length = drops.length;
-                rainSpeed.fill(1).map(() => Math.random() * 1.5 + 0.5);
-            }, 250);
-        });
     </script>
 </body>
 </html>
