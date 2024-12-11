@@ -12,9 +12,9 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a1a;
-            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,23 +23,141 @@
             overflow: hidden;
         }
 
+        /* Matrix-style falling characters background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(0, 0, 0, 0.95), rgba(0, 20, 0, 0.85));
+            animation: pulse 4s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Animated grid overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px) 0 0 / 50px 50px,
+                linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px) 0 0 / 50px 50px,
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 0, 0.05) 0%, transparent 60%);
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+        }
+
+        /* Random floating binary numbers */
+        .binary-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .binary {
+            position: absolute;
+            color: rgba(0, 255, 0, 0.15);
+            font-size: 1.2rem;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100%); opacity: 1; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(180deg) scale(1.1);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg) scale(1);
+            }
+        }
+
         .container {
             text-align: center;
             padding: 4rem;
-            background: #2d2d2d;
-            border-radius: 20px;
+            background: rgba(0, 20, 0, 0.85);
+            border: 2px solid #00ff00;
+            border-radius: 5px;
             max-width: 95%;
             width: 800px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2),
+                        inset 0 0 30px rgba(0, 255, 0, 0.1);
+            position: relative;
+            animation: glitch 10s infinite;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: none; }
+            92% { transform: skew(2deg); }
+            94% { transform: skew(-2deg); }
+            96% { transform: skew(1deg); }
+            98% { transform: skew(-1deg); }
+        }
+
+        .header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: brightness(0) saturate(100%) invert(54%) sepia(98%) saturate(1099%) hue-rotate(87deg) brightness(128%) contrast(119%);
         }
 
         h1 {
             font-size: 3.5rem;
-            margin-bottom: 2rem;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .coming-soon {
+            font-size: 3.5rem;
+            margin: 1rem 0;
+            color: #00ff00;
+            position: relative;
+            display: inline-block;
+            animation: textGlitch 3s infinite;
+            font-weight: bold;
+        }
+
+        @keyframes textGlitch {
+            0%, 100% { transform: none; text-shadow: none; }
+            92% { transform: translate(-2px, 1px); text-shadow: -2px 0 #ff0000, 2px 2px #0000ff; }
+            94% { transform: translate(2px, -1px); text-shadow: 2px -1px #ff0000, -2px 0 #0000ff; }
+            96% { transform: translate(-1px, -1px); text-shadow: 0 1px #ff0000, -1px -2px #0000ff; }
+            98% { transform: translate(1px, 1px); text-shadow: -1px 0 #ff0000, 1px -1px #0000ff; }
         }
 
         .countdown {
@@ -50,32 +168,27 @@
         }
 
         .countdown-item {
-            background: #363636;
+            background: rgba(0, 40, 0, 0.9);
             padding: 1.5rem;
-            border-radius: 15px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
             min-width: 120px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
         }
 
         .countdown-value {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #4ecdc4;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
         }
 
         .countdown-label {
             font-size: 0.9rem;
-            color: #a0a0a0;
+            color: #00cc00;
             text-transform: uppercase;
             margin-top: 0.5rem;
-        }
-
-        .description {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: #e0e0e0;
-            margin: 2rem auto;
-            max-width: 700px;
+            letter-spacing: 1px;
         }
 
         .email-form {
@@ -86,32 +199,39 @@
             padding: 1rem 1.5rem;
             width: 100%;
             max-width: 400px;
-            background: #363636;
-            border: none;
-            border-radius: 10px;
-            color: #ffffff;
+            background: rgba(0, 40, 0, 0.9);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
             font-size: 1rem;
             margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
         }
 
         input[type="email"]:focus {
-            outline: 2px solid #4ecdc4;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
         button {
             padding: 1rem 2.5rem;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            color: white;
-            border: none;
-            border-radius: 10px;
+            background: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         button:hover {
-            transform: translateY(-2px);
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
         }
 
         @media (max-width: 768px) {
@@ -132,9 +252,10 @@
             h1 {
                 font-size: 2.5rem;
             }
-            
-            .description {
-                font-size: 1rem;
+
+            .logo {
+                width: 80px;
+                height: 80px;
             }
         }
 
@@ -151,18 +272,22 @@
             .countdown-value {
                 font-size: 1.8rem;
             }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="binary-rain" id="binaryRain"></div>
     <div class="container">
-        <h1>UU Cybers</h1>
-        <div class="description">
-            Get ready for a revolutionary cybersecurity experience at Uttaranchal University! 
-            UU Cybers is about to unleash a world of ethical hacking, cybersecurity challenges, 
-            and cutting-edge tech innovations. Join our elite community of cyber warriors and 
-            shape the future of digital security.
+        <div class="header-flex">
+            <img src="/Coming Soon/logoo.png" alt="Uttaranchal University Logo" class="logo">
+            <h1>UU Cybers</h1>
         </div>
+        <div class="coming-soon">We are coming soon</div>
         <div class="countdown" id="countdown">
             <div class="countdown-item">
                 <div class="countdown-value" id="days">--</div>
@@ -182,8 +307,8 @@
             </div>
         </div>
         <div class="email-form">
-            <input type="email" placeholder="Enter your email for exclusive updates" aria-label="Email for updates">
-            <button type="button">Join the Mission</button>
+            <input type="email" placeholder="[ENTER EMAIL ADDRESS]" aria-label="Email for updates">
+            <button type="button">INITIATE ACCESS</button>
         </div>
     </div>
 
@@ -207,7 +332,32 @@
             document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
         }
 
+        // Binary rain animation
+        function createBinaryRain() {
+            const rain = document.getElementById('binaryRain');
+            const width = window.innerWidth;
+            
+            for(let i = 0; i < 50; i++) {
+                const binary = document.createElement('div');
+                binary.className = 'binary';
+                binary.style.left = Math.random() * width + 'px';
+                binary.style.animationDuration = 5 + Math.random() * 10 + 's';
+                binary.style.opacity = Math.random();
+                binary.textContent = Math.random() > 0.5 ? '0' : '1';
+                rain.appendChild(binary);
+            }
+        }
+
+        // Initialize animations and countdown
+        createBinaryRain();
         setInterval(updateCountdown, 1000);
+        
+        // Recreate binary rain periodically
+        setInterval(() => {
+            const rain = document.getElementById('binaryRain');
+            rain.innerHTML = '';
+            createBinaryRain();
+        }, 15000);
     </script>
 </body>
 </html>
